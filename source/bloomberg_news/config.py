@@ -10,6 +10,7 @@ class Config:
     
     # Selenium settings
     CHROMEDRIVER_PATH = 'chromedriver_linux64/chromedriver'
+    HEADLESS = True
     WAIT_PAUSE_TIME = 3 #seconds
     SCROLL_PAUSE_TIME = 2 #seconds
     

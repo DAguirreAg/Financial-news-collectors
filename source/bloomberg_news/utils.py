@@ -31,9 +31,14 @@ def add_webpage(url: str, domain: str, html: str, save_to: str = "file"):
         filename = Config.FILENAME_PREFIX + filename_datetime + '.txt'
         filename = os.path.join(Config.DOWNLOAD_PATH, filename)
 
+        # Check if the directory exists
+        if not os.path.exists(Config.DOWNLOAD_PATH):
+            # If it doesn't exist, create it
+            os.makedirs(Config.DOWNLOAD_PATH)
+
         # Save to a new file
         with open(filename, "w") as text_file:
-                text_file.write(webpage_json)
+            text_file.write(webpage_json)
                 
     elif save_to == 'mongoDB':
         

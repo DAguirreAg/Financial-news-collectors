@@ -6,11 +6,16 @@ from utils import add_webpage
 
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.options import Options
 
 if __name__ == '__main__':
-    
+
     # Start driver
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install())) 
+    chrome_options = Options()
+    if Config.HEADLESS == True:
+        chrome_options.add_argument("--headless")
+
+    driver = webdriver.Chrome(service = Service(ChromeDriverManager().install()), options=chrome_options) 
     driver.implicitly_wait(Config.WAIT_PAUSE_TIME) # seconds to wait
     
     try:
@@ -28,7 +33,7 @@ if __name__ == '__main__':
                 # To DO: Add logging of errors
                 continue
 
-            # Save HTML to Database
+            # Save HTML
             html_doc = driver.page_source
             add_webpage(url, Config.DOMAIN, html_doc)
             
