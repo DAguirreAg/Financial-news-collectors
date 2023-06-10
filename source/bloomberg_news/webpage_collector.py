@@ -8,7 +8,7 @@ from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 
 if __name__ == '__main__':
-    print(Config.CHROMEDRIVER_PATH)
+    
     # Start driver
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install())) 
     driver.implicitly_wait(Config.WAIT_PAUSE_TIME) # seconds to wait

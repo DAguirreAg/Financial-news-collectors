@@ -4,6 +4,10 @@ class Config:
     # DB settings
     MONGODB_DATABASE_URL = 'mongodb://localhost:27017/'
 
+    # Directory settings
+    DOWNLOAD_PATH = 'downloads'
+    FILENAME_PREFIX = 'Output_'
+    
     # Selenium settings
     CHROMEDRIVER_PATH = 'chromedriver_linux64/chromedriver'
     WAIT_PAUSE_TIME = 3 #seconds
