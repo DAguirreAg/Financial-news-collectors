@@ -28,7 +28,7 @@ def add_webpage(url: str, domain: str, html: str, save_to: str = "file"):
         
         # Create filename
         filename_datetime = str(datetime.datetime.now()).replace(' ', '_').replace('-', '').replace(':', '').split('.')[0]
-        filename = Config.FILENAME_PREFIX + filename_datetime + '.txt'
+        filename = Config.FILENAME_PREFIX + filename_datetime + '.json'
         filename = os.path.join(Config.DOWNLOAD_PATH, filename)
 
         # Check if the directory exists

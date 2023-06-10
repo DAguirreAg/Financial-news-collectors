@@ -1,12 +1,15 @@
+import sys
+sys.path.append("..")
+
 import time
+from config import Config
+import utils.mongodb_utils as mongodb_utils
+
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
-from config import Config
-from utils import add_webpage
-
 from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.options import Options
+from webdriver_manager.chrome import ChromeDriverManager
 
 if __name__ == '__main__':
 
@@ -35,7 +38,7 @@ if __name__ == '__main__':
 
             # Save HTML
             html_doc = driver.page_source
-            add_webpage(url, Config.DOMAIN, html_doc)
+            mongodb_utils.add_webpage(url, Config.DOMAIN, html_doc, Config.RAW_FORMAT)
             
     except Exception as e:
         # To DO: Add logging of errors
