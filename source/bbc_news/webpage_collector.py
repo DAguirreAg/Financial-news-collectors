@@ -52,8 +52,8 @@ def main(config, urls, domain, download_path):
 if __name__ == '__main__':
     
     config = Config()
-    urls = config.NEWS_SETTINGS['Bloomberg']['URLS']
-    domain = config.NEWS_SETTINGS['Bloomberg']['DOMAIN']
-    download_path = config.NEWS_SETTINGS['Bloomberg']['DOWNLOAD_PATH']
+    urls = config.NEWS_SETTINGS['BBC']['URLS']
+    domain = config.NEWS_SETTINGS['BBC']['DOMAIN']
+    download_path = config.NEWS_SETTINGS['BBC']['DOWNLOAD_PATH']
     
     main(config, urls, domain, download_path)

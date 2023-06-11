@@ -9,31 +9,46 @@ class Config:
     SQLALCHEMY_DATABASE_URL = 'postgresql+psycopg2://postgres:mysecretpassword@localhost:5432/db_finance_universe'
 
     # Directory settings
-    DOWNLOAD_PATH = 'downloads'
     FILENAME_PREFIX = 'Output_'
-
-    ETL_CONSUMPTION_PATH = 'downloads/'
     
     # Selenium settings
     CHROMEDRIVER_PATH = 'chromedriver_linux64/chromedriver'
     HEADLESS = False
     WAIT_PAUSE_TIME = 3 #seconds
     SCROLL_PAUSE_TIME = 2 #seconds
-    
-    # Bloomberg news settings
-    DOMAIN = 'Bloomberg'
+    RAW_FORMAT = 'file' # How the collected files will be saved/loaded: Folder/File or MongoDB
 
-    URLS = [
-        #'https://www.bloomberg.com/markets',
-        'https://www.bloomberg.com/economics',
-        #'https://www.bloomberg.com/economics/indicators',
-        #'https://www.bloomberg.com/economics/central-banks',
-        #'https://www.bloomberg.com/economics/jobs',
-        #'https://www.bloomberg.com/economics/trade',
-        #'https://www.bloomberg.com/economics/tax-and-spend',
-        #'https://www.bloomberg.com/economics/inflation-and-prices'     
-        ]
-    
-    # How the collected files will be saved/loaded: Folder/File or MongoDB
-    RAW_FORMAT = 'file'
+    # Bloomberg news settings
+    NEWS_SETTINGS = {
+        'Bloomberg': {
+            'DOMAIN': 'Bloomberg',
+            'URLS': [
+                #'https://www.bloomberg.com/markets',
+                'https://www.bloomberg.com/economics',
+                #'https://www.bloomberg.com/economics/indicators',
+                #'https://www.bloomberg.com/economics/central-banks',
+                #'https://www.bloomberg.com/economics/jobs',
+                #'https://www.bloomberg.com/economics/trade',
+                #'https://www.bloomberg.com/economics/tax-and-spend',
+                #'https://www.bloomberg.com/economics/inflation-and-prices',
+            ],
+            'DOWNLOAD_PATH': 'downloads/Bloomberg/',
+            'ETL_CONSUMPTION_PATH': 'downloads/Bloomberg/'
+        },
+        'BBC': {
+            'DOMAIN': 'BBC',
+            'URLS': [
+                'https://www.bbc.com/news',
+                #'https://www.bbc.com/news/science-environment-56837908',
+                #'https://www.bbc.com/news/world',
+                #'https://www.bbc.com/news/business',
+                #'https://www.bbc.com/news/technology',
+                #'https://www.bbc.com/news/science_and_environment',
+            ],
+            'DOWNLOAD_PATH': 'downloads/BBC/',
+            'ETL_CONSUMPTION_PATH': 'downloads/BBC/'
+        },
+    }
+
+
 

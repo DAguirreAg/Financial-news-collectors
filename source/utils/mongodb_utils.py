@@ -11,8 +11,8 @@ mongodb = mongodb_client["financial_news"]
 # Create the collections
 webpage_collection = mongodb["webpages"]
 
-def add_webpage(url: str, domain: str, html: str, save_to: str = "file"):
-    
+def add_webpage(config: Config, url: str, domain: str, html: str, save_to: str, download_path: str = None):
+        
     # Create the webpage dict
     webpage = {
             'url': url,
@@ -28,13 +28,13 @@ def add_webpage(url: str, domain: str, html: str, save_to: str = "file"):
         
         # Create filename
         filename_datetime = str(datetime.datetime.now()).replace(' ', '_').replace('-', '').replace(':', '').split('.')[0]
-        filename = Config.FILENAME_PREFIX + filename_datetime + '.json'
-        filename = os.path.join(Config.DOWNLOAD_PATH, filename)
+        filename = config.FILENAME_PREFIX + filename_datetime + '.json'
+        filename = os.path.join(download_path, filename)
 
         # Check if the directory exists
-        if not os.path.exists(Config.DOWNLOAD_PATH):
+        if not os.path.exists(download_path):
             # If it doesn't exist, create it
-            os.makedirs(Config.DOWNLOAD_PATH)
+            os.makedirs(download_path)
 
         # Save to a new file
         with open(filename, "w") as text_file:
@@ -46,4 +46,4 @@ def add_webpage(url: str, domain: str, html: str, save_to: str = "file"):
         webpage_collection.insert_one(webpage)
 
     else:
-        raise Exception(f'"save_to" parameter received unexpected value. Please revise.')
+        raise Exception(f'"save_to" parameter received unexpected value: {save_to}. Please revise.')
