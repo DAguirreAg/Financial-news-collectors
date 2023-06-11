@@ -11,26 +11,30 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
 
+import random
+
 def main(config, urls, domain, download_path):
 
-    # Start driver
+    # Driver settings
     chrome_options = Options()
     if config.HEADLESS == True:
         chrome_options.add_argument("--headless")
 
+    # Start driver
     driver = webdriver.Chrome(service = Service(ChromeDriverManager().install()), options=chrome_options) 
     driver.implicitly_wait(config.WAIT_PAUSE_TIME) # seconds to wait
     
     try:
         # Get request from URL
         for url in urls:
+            print(f'Downloading: {url}')
 
             # Go to url
             try:
                 driver.get(url)
 
                 # Wait to load page
-                time.sleep(config.WAIT_PAUSE_TIME)
+                time.sleep(config.WAIT_PAUSE_TIME + random.random()*5 )
 
             except WebDriverException as e:
                 # To DO: Add logging of errors

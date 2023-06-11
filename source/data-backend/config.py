@@ -23,14 +23,14 @@ class Config:
         'Bloomberg': {
             'DOMAIN': 'Bloomberg',
             'URLS': [
-                #'https://www.bloomberg.com/markets',
+                'https://www.bloomberg.com/markets',
                 'https://www.bloomberg.com/economics',
-                #'https://www.bloomberg.com/economics/indicators',
-                #'https://www.bloomberg.com/economics/central-banks',
-                #'https://www.bloomberg.com/economics/jobs',
-                #'https://www.bloomberg.com/economics/trade',
-                #'https://www.bloomberg.com/economics/tax-and-spend',
-                #'https://www.bloomberg.com/economics/inflation-and-prices',
+                'https://www.bloomberg.com/economics/indicators',
+                'https://www.bloomberg.com/economics/central-banks',
+                'https://www.bloomberg.com/economics/jobs',
+                'https://www.bloomberg.com/economics/trade',
+                'https://www.bloomberg.com/economics/tax-and-spend',
+                'https://www.bloomberg.com/economics/inflation-and-prices',
             ],
             'DOWNLOAD_PATH': 'downloads/Bloomberg/',
             'ETL_CONSUMPTION_PATH': 'downloads/Bloomberg/'
@@ -39,11 +39,12 @@ class Config:
             'DOMAIN': 'BBC',
             'URLS': [
                 'https://www.bbc.com/news',
-                #'https://www.bbc.com/news/science-environment-56837908',
-                #'https://www.bbc.com/news/world',
-                #'https://www.bbc.com/news/business',
-                #'https://www.bbc.com/news/technology',
-                #'https://www.bbc.com/news/science_and_environment',
+                'https://www.bbc.com/news/science-environment-56837908',
+                'https://www.bbc.com/news/world',
+                'https://www.bbc.com/news/business',
+                'https://www.bbc.com/news/technology',
+                'https://www.bbc.com/news/science_and_environment',
+                'https://www.bbc.com/news/stories'
             ],
             'DOWNLOAD_PATH': 'downloads/BBC/',
             'ETL_CONSUMPTION_PATH': 'downloads/BBC/'

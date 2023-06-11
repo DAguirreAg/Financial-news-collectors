@@ -11,9 +11,9 @@ if __name__ == '__main__':
     urls = config.NEWS_SETTINGS['BBC']['URLS']
     domain = config.NEWS_SETTINGS['BBC']['DOMAIN']
     download_path = config.NEWS_SETTINGS['BBC']['DOWNLOAD_PATH']
-    bbc_news.webpage_collector.main(config, urls, domain, download_path)
+    #bbc_news.webpage_collector.main(config, urls, domain, download_path)
 
-    # ETL Bloomberg news
+    # ETL BBC news
     etl_consumption_path = config.NEWS_SETTINGS['BBC']['ETL_CONSUMPTION_PATH']
     bbc_news.webpage_etl.main(config, etl_consumption_path)
 
@@ -22,7 +22,7 @@ if __name__ == '__main__':
     urls = config.NEWS_SETTINGS['Bloomberg']['URLS']
     domain = config.NEWS_SETTINGS['Bloomberg']['DOMAIN']
     download_path = config.NEWS_SETTINGS['Bloomberg']['DOWNLOAD_PATH']
-    bloomberg_news.webpage_collector.main(config, urls, domain, download_path)
+    #bloomberg_news.webpage_collector.main(config, urls, domain, download_path)
     
     # ETL Bloomberg news
     etl_consumption_path = config.NEWS_SETTINGS['Bloomberg']['ETL_CONSUMPTION_PATH']

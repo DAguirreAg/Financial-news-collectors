@@ -11,26 +11,30 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
 
+import random
+
 def main(config, urls, domain, download_path):
 
-    # Start driver
+    # Driver settings
     chrome_options = Options()
     if config.HEADLESS == True:
         chrome_options.add_argument("--headless")
 
-    driver = webdriver.Chrome(service = Service(ChromeDriverManager().install()), options=chrome_options) 
-    driver.implicitly_wait(config.WAIT_PAUSE_TIME) # seconds to wait
-    
-    try:
-        # Get request from URL
-        for url in urls:
+    # Get request from URL
+    for url in urls:
+        print(f'Downloading: {url}')
+
+        try:
+            # Start driver
+            driver = webdriver.Chrome(service = Service(ChromeDriverManager().install()), options=chrome_options) 
+            driver.implicitly_wait(config.WAIT_PAUSE_TIME) # seconds to wait
 
             # Go to url
             try:
                 driver.get(url)
 
                 # Wait to load page
-                time.sleep(config.WAIT_PAUSE_TIME)
+                time.sleep(config.WAIT_PAUSE_TIME + random.random()*5 )
 
             except WebDriverException as e:
                 # To DO: Add logging of errors
@@ -39,15 +43,14 @@ def main(config, urls, domain, download_path):
             # Save HTML
             html_doc = driver.page_source
             mongodb_utils.add_webpage(config, url, domain, html_doc, config.RAW_FORMAT, download_path)
-            
-    except Exception as e:
-        # To DO: Add logging of errors
-        raise Exception(e)
-    
-    finally:
         
-        # Close driver
-        driver.close()
+        except Exception as e:
+            # To DO: Add logging of errors
+            raise Exception(e)
+        
+        finally:
+            # Close driver
+            driver.close()
 
 if __name__ == '__main__':
     
