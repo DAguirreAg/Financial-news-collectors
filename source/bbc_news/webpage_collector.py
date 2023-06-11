@@ -48,7 +48,7 @@ def main(config, urls, domain, download_path):
         
         # Close driver
         driver.close()
-
+        
 if __name__ == '__main__':
     
     config = Config()
