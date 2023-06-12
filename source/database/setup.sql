@@ -10,6 +10,7 @@ CREATE TABLE news (
     tickers TEXT[][],
     domain VARCHAR NOT NULL,
     ref_filename VARCHAR NOT NULL,
-    sentiment_analysis_score FLOAT
+    sentiment_analysis_score FLOAT,
+    countries TEXT[][]
 );
 

@@ -1,4 +1,4 @@
-from sqlalchemy import MetaData, Table, Column, Integer, String, Float, Date
+from sqlalchemy import MetaData, Table, Column, Integer, String, Float, Date, ARRAY
 
 meta = MetaData()
 
@@ -10,5 +10,7 @@ news = Table(
    Column('tickers', String), 
    Column('domain', String, nullable = False), 
    Column('ref_filename', String, nullable = False), 
-   Column('sentiment_analysis_score', Float)
+   Column('sentiment_analysis_score', Float),
+   Column('countries', ARRAY(String)),
+
 )

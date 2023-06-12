@@ -8,6 +8,7 @@ from config import Config
 import glob
 import utils.sql_utils as sql_utils
 import utils.sentiment_analysis_scorer as sentiment_analysis_scorer
+import utils.country_detector as country_detector
 
 # Helper functions
 def get_title(headline):
@@ -87,7 +88,8 @@ def extract_headline_data(headline):
         'url': get_url(headline),
         'publish_date': get_publish_date(headline),
         'tickers': get_tickers(headline),
-        'sentiment_analysis_score': sentiment_analysis_scorer.get_sentiment_analysis_score(get_title(headline))
+        'sentiment_analysis_score': sentiment_analysis_scorer.get_sentiment_analysis_score(get_title(headline)),
+        'countries': country_detector.get_countries(get_title(headline))
     }
     
     return extract
