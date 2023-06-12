@@ -9,6 +9,7 @@ CREATE TABLE news (
     publish_date DATE NOT NULL,
     tickers TEXT[][],
     domain VARCHAR NOT NULL,
-    ref_filename VARCHAR NOT NULL
+    ref_filename VARCHAR NOT NULL,
+    sentiment_analysis_score FLOAT
 );
 
