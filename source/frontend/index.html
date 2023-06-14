@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial news dashboard</title>
+
+    <!--JQuery-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <!-- Load d3.js -->
+    <script src="https://d3js.org/d3.v4.js"></script>
+    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+    <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
+
+    <!--CSS Style-->
+    <link rel="stylesheet" href="static/styles.css">
+</head>
+<body>
+
+    <section>
+
+        <div class="content">
+
+            <h1>Financial news</h1>
+
+            <div class="metric-container">
+
+                <h3>Basic statistics</h3>
+
+                <div class="flex-container">
+
+                    <div class="metric-item">
+                        <h4># of news</h4>
+                        <p class="metric-value">135</p>
+                    </div>
+
+                    <div class="metric-item">
+                        <h4># of sources</h4>
+                        <p class="metric-value">2</p>
+                    </div>
+
+                    <div class="metric-item">
+                        <h4># of countries</h4>
+                        <p class="metric-value">5</p>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="main-graphs-container flex-container">
+                
+                <div class="recent-news-table">
+
+                    <h3>Recent news</h3>
+
+                    <table>
+                        <tr>
+                          <th>Date</th>
+                          <th>Title</th>
+                          <th>Sentiment score</th>
+                        </tr>
+                        <tr>
+                          <td>2023-06-12</td>
+                          <td>
+                            <a href="">Ukraine counter-offensive has begun, Zelensky says</a>
+                          </td>
+                          <td>-0.0222</td>
+                        </tr>
+                        <tr>
+                          <td>2023-06-13</td>
+                          <td>
+                            <a href="">Defiant Trump still headline Republican act despite charges</a>
+                          </td>
+                          <td>-0.5574</td>
+                        </tr>
+                      </table>                       
+
+                </div>
+
+                <div class="daily-news-amount">
+
+                    <h3>News amount over time</h3>
+
+                    <div id="graph_news_amount_over_time"></div>
+
+                </div>
+
+            </div>
+
+        </div>
+            
+    </section>
+
+    <section>
+
+        <div class="content">
+
+            <div class="main-graphs-container flex-container">
+                
+                <div class="">
+
+                    <h3>News amount per country</h3>
+
+                    <svg id="graph_news_amount_per_country" width="400" height="300"></svg>
+
+                </div>
+
+                <div class="">
+
+                    <h3>News average sentiment per country</h3>
+
+                    <svg id="graph_news_sentiment_per_country" width="400" height="300"></svg>
+
+                </div>
+
+            </div>
+
+        </div>
+        
+    </section>
+    
+    <script>
+
+
+        // set the dimensions and margins of the graph
+        var margin = {top: 30, right: 30, bottom: 70, left: 60},
+            width = 460 - margin.left - margin.right,
+            height = 400 - margin.top - margin.bottom;
+        
+        // append the svg object to the body of the page
+        var svg = d3.select("#graph_news_amount_over_time")
+          .append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+          .append("g")
+            .attr("transform",
+                  "translate(" + margin.left + "," + margin.top + ")");
+        
+        // Parse the Data
+        d3.csv("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/7_OneCatOneNum_header.csv", function(data) {
+        
+        // X axis
+        var x = d3.scaleBand()
+          .range([ 0, width ])
+          .domain(data.map(function(d) { return d.Country; }))
+          .padding(0.2);
+        svg.append("g")
+          .attr("transform", "translate(0," + height + ")")
+          .call(d3.axisBottom(x))
+          .selectAll("text")
+            .attr("transform", "translate(-10,0)rotate(-45)")
+            .style("text-anchor", "end");
+        
+        // Add Y axis
+        var y = d3.scaleLinear()
+          .domain([0, 13000])
+          .range([ height, 0]);
+        svg.append("g")
+          .call(d3.axisLeft(y));
+        
+        // Bars
+        svg.selectAll("mybar")
+          .data(data)
+          .enter()
+          .append("rect")
+            .attr("x", function(d) { return x(d.Country); })
+            .attr("y", function(d) { return y(d.Value); })
+            .attr("width", x.bandwidth())
+            .attr("height", function(d) { return height - y(d.Value); })
+            .attr("fill", "#69b3a2")
+        
+        })
+
+        ///////////////
+        // The svg
+        var svg1 = d3.select("#graph_news_amount_per_country"),
+            width = +svg1.attr("width"),
+            height = +svg1.attr("height");
+
+        // Map and projection
+        var path = d3.geoPath();
+        var projection = d3.geoMercator()
+        .scale(70)
+        .center([0,20])
+        .translate([width / 2, height / 2]);
+
+        // Data and color scale
+        var data = d3.map();
+        var colorScale = d3.scaleThreshold()
+        .domain([100000, 1000000, 10000000, 30000000, 100000000, 500000000])
+        .range(d3.schemeBlues[7]);
+
+        // Load external data and boot
+        d3.queue()
+        .defer(d3.json, "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson")
+        .defer(d3.csv, "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world_population.csv", function(d) { data.set(d.code, +d.pop); })
+        .await(ready);
+
+        function ready(error, topo) {
+
+        // Draw the map
+        svg1.append("g")
+            .selectAll("path")
+            .data(topo.features)
+            .enter()
+            .append("path")
+            // draw each country
+            .attr("d", d3.geoPath()
+                .projection(projection)
+            )
+            // set the color of each country
+            .attr("fill", function (d) {
+                d.total = data.get(d.id) || 0;
+                return colorScale(d.total);
+            });
+            }
+
+        ///////////////
+        // The svg
+        var svg2 = d3.select("#graph_news_sentiment_per_country"),
+            width = +svg2.attr("width"),
+            height = +svg2.attr("height");
+
+        // Map and projection
+        var path = d3.geoPath();
+        var projection = d3.geoMercator()
+        .scale(70)
+        .center([0,20])
+        .translate([width / 2, height / 2]);
+
+        // Data and color scale
+        var data = d3.map();
+        var colorScale = d3.scaleThreshold()
+        .domain([100000, 1000000, 10000000, 30000000, 100000000, 500000000])
+        .range(d3.schemeBlues[7]);
+
+        // Load external data and boot
+        d3.queue()
+        .defer(d3.json, "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson")
+        .defer(d3.csv, "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world_population.csv", function(d) { data.set(d.code, +d.pop); })
+        .await(ready);
+
+        function ready(error, topo) {
+
+        // Draw the map
+        svg2.append("g")
+            .selectAll("path")
+            .data(topo.features)
+            .enter()
+            .append("path")
+            // draw each country
+            .attr("d", d3.geoPath()
+                .projection(projection)
+            )
+            // set the color of each country
+            .attr("fill", function (d) {
+                d.total = data.get(d.id) || 0;
+                return colorScale(d.total);
+            });
+            }
+
+    </script>
+
+</body>
+</html>

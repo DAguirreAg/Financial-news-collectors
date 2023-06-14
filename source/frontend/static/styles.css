@@ -1,0 +1,54 @@
+body {
+    background-color: #f6f6f8; /*#f6f6f8;*/
+    color: black;
+}
+
+.content {
+    width: 80%;
+    margin: auto;
+}
+
+/* Main section */
+.metric-container {
+    margin: 30px 0px;
+}
+
+.flex-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.metric-item {
+    background-color: white;
+    padding: 5px 15px;
+    margin: 0px 10px;
+    border-radius: 20px;
+    text-align: center;
+    min-width: 150px;
+    box-shadow: 10px 10px 5px rgba(0,0,0, 0.2);
+}
+
+.metric-value {
+    font-size: 25px;
+}
+
+/* Main graphs container */
+
+.main-graphs-container {
+    margin: 30px 0px;
+}
+
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+    background-color: white;
+    text-align: center;
+}
+
+table th {
+  background-color: #D6EEEE;
+}
+
+.recent-news-table {
+    min-width: 800px;
+}
