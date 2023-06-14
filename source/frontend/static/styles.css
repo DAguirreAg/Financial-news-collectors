@@ -1,3 +1,4 @@
+/* General */
 body {
     background-color: #f6f6f8; /*#f6f6f8;*/
     color: black;
@@ -6,36 +7,6 @@ body {
 .content {
     width: 80%;
     margin: auto;
-}
-
-/* Main section */
-.metric-container {
-    margin: 30px 0px;
-}
-
-.flex-container {
-    display: flex;
-    flex-wrap: wrap;
-}
-
-.metric-item {
-    background-color: white;
-    padding: 5px 15px;
-    margin: 0px 10px;
-    border-radius: 20px;
-    text-align: center;
-    min-width: 150px;
-    box-shadow: 10px 10px 5px rgba(0,0,0, 0.2);
-}
-
-.metric-value {
-    font-size: 25px;
-}
-
-/* Main graphs container */
-
-.main-graphs-container {
-    margin: 30px 0px;
 }
 
 table, th, td {
@@ -49,6 +20,53 @@ table th {
   background-color: #D6EEEE;
 }
 
-.recent-news-table {
+table {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.decorated-box {
+    background-color: white;
+    padding: 5px 15px;
+    margin: 0px 10px;
+    border-radius: 20px;
+    box-shadow: 10px 10px 5px rgba(0,0,0, 0.2);
+}
+
+.flex-container {
+    display: flex;
+    flex-wrap: wrap;
+    row-gap: 30px;
+}
+
+
+
+/* Main section */
+.metric-container {
+    margin: 30px 20px;
+}
+
+.metric-item {
+    text-align: center;
+    min-width: 150px;
+}
+
+.metric-value {
+    font-size: 25px;
+}
+
+/* Main graphs container */
+
+.main-graphs-container {
+    margin: 30px 0px;
+}
+
+
+
+#recent-news-table {
     min-width: 800px;
+}
+
+#recent-news-table table {
+    margin: 30px auto;
 }

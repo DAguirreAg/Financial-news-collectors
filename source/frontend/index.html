@@ -31,17 +31,17 @@
 
                 <div class="flex-container">
 
-                    <div class="metric-item">
+                    <div class="metric-item decorated-box">
                         <h4># of news</h4>
                         <p class="metric-value">135</p>
                     </div>
 
-                    <div class="metric-item">
+                    <div class="metric-item decorated-box">
                         <h4># of sources</h4>
                         <p class="metric-value">2</p>
                     </div>
 
-                    <div class="metric-item">
+                    <div class="metric-item decorated-box">
                         <h4># of countries</h4>
                         <p class="metric-value">5</p>
                     </div>
@@ -51,35 +51,39 @@
 
             <div class="main-graphs-container flex-container">
                 
-                <div class="recent-news-table">
+                <div id="recent-news-table" class="decorated-box">
 
                     <h3>Recent news</h3>
 
                     <table>
-                        <tr>
-                          <th>Date</th>
-                          <th>Title</th>
-                          <th>Sentiment score</th>
-                        </tr>
-                        <tr>
-                          <td>2023-06-12</td>
-                          <td>
-                            <a href="">Ukraine counter-offensive has begun, Zelensky says</a>
-                          </td>
-                          <td>-0.0222</td>
-                        </tr>
-                        <tr>
-                          <td>2023-06-13</td>
-                          <td>
-                            <a href="">Defiant Trump still headline Republican act despite charges</a>
-                          </td>
-                          <td>-0.5574</td>
-                        </tr>
+                        <thead>
+                            <tr>
+                            <th>Date</th>
+                            <th>Title</th>
+                            <th>Sentiment score</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>2023-06-12</td>
+                                <td>
+                                    <a href="">Ukraine counter-offensive has begun, Zelensky says</a>
+                                </td>
+                                <td>-0.0222</td>
+                            </tr>
+                            <tr>
+                                <td>2023-06-13</td>
+                                <td>
+                                    <a href="">Defiant Trump still headline Republican act despite charges</a>
+                                </td>
+                                <td>-0.5574</td>
+                            </tr>
+                        </tbody>
                       </table>                       
 
                 </div>
 
-                <div class="daily-news-amount">
+                <div class="daily-news-amount decorated-box">
 
                     <h3>News amount over time</h3>
 
@@ -123,7 +127,46 @@
     
     <script>
 
+        $( document ).ready(function() {
+            console.log( "ready!" );
+            var data = [
+                {"publish_date":"2021-01-01", "title":"Ukraine counter-offensive has begun, Zelensky says", "sentiment_analysis_score":"0.46"},
+                {"publish_date":"2021-01-02", "title":"Defiant Trump still headline Republican act despite charges", "sentiment_analysis_score":"-0.89"},
+                {"publish_date":"2021-01-03", "title":"Stocks Edge Higher in Countdown to Fed Decision: Markets Wrap", "sentiment_analysis_score":"0.5"}
+                ]
 
+            // Populate the table
+            var tbodyRef = document.getElementById('recent-news-table').getElementsByTagName('tbody')[0];
+
+            for (let i = 0; i < data.length; i++) {
+                var row = `
+                    <td>${data[i].publish_date}</td>
+                    <td>
+                        <a href="">${data[i].title}</a>
+                    </td>
+                    <td>${data[i].sentiment_analysis_score}</td>
+                    `;
+                // Insert a row at the end of table
+                var newRow = tbodyRef.insertRow();
+
+                newRow.innerHTML = row;
+            };
+
+
+
+
+
+
+            // Insert a cell at the end of the row
+            //var newCell = newRow.insertCell();
+
+            // Append a text node to the cell
+            //var newText = document.createTextNode('new row');
+            //newCell.appendChild(newText);
+
+        });
+        
+        /*
         // set the dimensions and margins of the graph
         var margin = {top: 30, right: 30, bottom: 70, left: 60},
             width = 460 - margin.left - margin.right,
@@ -140,39 +183,52 @@
         
         // Parse the Data
         d3.csv("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/7_OneCatOneNum_header.csv", function(data) {
-        
-        // X axis
-        var x = d3.scaleBand()
-          .range([ 0, width ])
-          .domain(data.map(function(d) { return d.Country; }))
-          .padding(0.2);
-        svg.append("g")
-          .attr("transform", "translate(0," + height + ")")
-          .call(d3.axisBottom(x))
-          .selectAll("text")
-            .attr("transform", "translate(-10,0)rotate(-45)")
-            .style("text-anchor", "end");
-        
-        // Add Y axis
-        var y = d3.scaleLinear()
-          .domain([0, 13000])
-          .range([ height, 0]);
-        svg.append("g")
-          .call(d3.axisLeft(y));
-        
-        // Bars
-        svg.selectAll("mybar")
-          .data(data)
-          .enter()
-          .append("rect")
-            .attr("x", function(d) { return x(d.Country); })
-            .attr("y", function(d) { return y(d.Value); })
-            .attr("width", x.bandwidth())
-            .attr("height", function(d) { return height - y(d.Value); })
-            .attr("fill", "#69b3a2")
+
+            //data = [{"publish_date": '2021-01-01', "value": "1"}, {"publish_date": '2021-01-02', "value": "1"}]
+            data = [{"Country": '2021-01-01', "Value": "50"}, {"Country": '2021-01-02', "Value": "110"}]
+
+            // Get max amount
+            var max_value = 0;
+            for (let i = 0; i < data.length; i++) {
+                if (data[i].Value > max_value){
+                    max_value = data[i].Value;
+                };
+            };
+            max_value = Math.ceil(max_value/100)*100;
+
+            // X axis
+            var x = d3.scaleBand()
+            .range([ 0, width ])
+            .domain(data.map(function(d) { return d.Country; }))
+            .padding(0.2);
+            svg.append("g")
+            .attr("transform", "translate(0," + height + ")")
+            .call(d3.axisBottom(x))
+            .selectAll("text")
+                .attr("transform", "translate(-10,0)rotate(-45)")
+                .style("text-anchor", "end");
+            
+            // Add Y axis
+            var y = d3.scaleLinear()
+            .domain([0, 200])
+            .range([ height, 0]);
+            svg.append("g")
+            .call(d3.axisLeft(y));
+            
+            // Bars
+            svg.selectAll("mybar")
+            .data(data)
+            .enter()
+            .append("rect")
+                .attr("x", function(d) { return x(d.Country); })
+                .attr("y", function(d) { return y(d.Value); })
+                .attr("width", x.bandwidth())
+                .attr("height", function(d) { return height - y(d.Value); })
+                .attr("fill", "#69b3a2")
         
         })
-
+        */
+        /*
         ///////////////
         // The svg
         var svg1 = d3.select("#graph_news_amount_per_country"),
@@ -260,7 +316,7 @@
                 return colorScale(d.total);
             });
             }
-
+        */
     </script>
 
 </body>
