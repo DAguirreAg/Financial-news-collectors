@@ -31,17 +31,17 @@
 
                 <div class="flex-container">
 
-                    <div class="metric-item decorated-box">
+                    <div id="amount-of-news-metric" class="metric-item decorated-box">
                         <h4># of news</h4>
                         <p class="metric-value">135</p>
                     </div>
 
-                    <div class="metric-item decorated-box">
+                    <div id="amount-of-news-sources" class="metric-item decorated-box">
                         <h4># of sources</h4>
                         <p class="metric-value">2</p>
                     </div>
 
-                    <div class="metric-item decorated-box">
+                    <div id="amount-of-countries" class="metric-item decorated-box">
                         <h4># of countries</h4>
                         <p class="metric-value">5</p>
                     </div>
@@ -127,8 +127,7 @@
     
     <script>
 
-        $( document ).ready(function() {
-            console.log( "ready!" );
+        function update_recent_news_table() {
             var data = [
                 {"publish_date":"2021-01-01", "title":"Ukraine counter-offensive has begun, Zelensky says", "sentiment_analysis_score":"0.46"},
                 {"publish_date":"2021-01-02", "title":"Defiant Trump still headline Republican act despite charges", "sentiment_analysis_score":"-0.89"},
@@ -136,7 +135,7 @@
                 ]
 
             // Populate the table
-            var tbodyRef = document.getElementById('recent-news-table').getElementsByTagName('tbody')[0];
+            var el = document.getElementById('recent-news-table').getElementsByTagName('tbody')[0];
 
             for (let i = 0; i < data.length; i++) {
                 var row = `
@@ -147,14 +146,28 @@
                     <td>${data[i].sentiment_analysis_score}</td>
                     `;
                 // Insert a row at the end of table
-                var newRow = tbodyRef.insertRow();
+                var newRow = el.insertRow();
 
                 newRow.innerHTML = row;
             };
+        };
+
+        function update_metric_item(id, value) {
+
+            // Update displayed value
+            var el = document.getElementById(id).getElementsByClassName('metric-value')[0];
+            el.innerHTML = value;
+        }
+
+        $( document ).ready(function() {
+            console.log( "ready!" );
 
 
+            update_recent_news_table();
 
-
+            update_metric_item('amount-of-news-metric', 145);
+            update_metric_item('amount-of-news-sources', 25);
+            update_metric_item('amount-of-countries', 58);
 
 
             // Insert a cell at the end of the row
