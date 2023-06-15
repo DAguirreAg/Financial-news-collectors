@@ -33,17 +33,17 @@
 
                     <div id="amount-of-news-metric" class="metric-item decorated-box">
                         <h4># of news</h4>
-                        <p class="metric-value">135</p>
+                        <p class="metric-value">-</p>
                     </div>
 
                     <div id="amount-of-news-sources" class="metric-item decorated-box">
                         <h4># of sources</h4>
-                        <p class="metric-value">2</p>
+                        <p class="metric-value">-</p>
                     </div>
 
                     <div id="amount-of-countries" class="metric-item decorated-box">
                         <h4># of countries</h4>
-                        <p class="metric-value">5</p>
+                        <p class="metric-value">-</p>
                     </div>
 
                 </div>
@@ -64,6 +64,7 @@
                             </tr>
                         </thead>
                         <tbody>
+                            <!--
                             <tr>
                                 <td>2023-06-12</td>
                                 <td>
@@ -77,7 +78,7 @@
                                     <a href="">Defiant Trump still headline Republican act despite charges</a>
                                 </td>
                                 <td>-0.5574</td>
-                            </tr>
+                            </tr>-->
                         </tbody>
                       </table>                       
 
@@ -127,31 +128,6 @@
     
     <script>
 
-        function update_recent_news_table() {
-            var data = [
-                {"publish_date":"2021-01-01", "title":"Ukraine counter-offensive has begun, Zelensky says", "sentiment_analysis_score":"0.46"},
-                {"publish_date":"2021-01-02", "title":"Defiant Trump still headline Republican act despite charges", "sentiment_analysis_score":"-0.89"},
-                {"publish_date":"2021-01-03", "title":"Stocks Edge Higher in Countdown to Fed Decision: Markets Wrap", "sentiment_analysis_score":"0.5"}
-                ]
-
-            // Populate the table
-            var el = document.getElementById('recent-news-table').getElementsByTagName('tbody')[0];
-
-            for (let i = 0; i < data.length; i++) {
-                var row = `
-                    <td>${data[i].publish_date}</td>
-                    <td>
-                        <a href="">${data[i].title}</a>
-                    </td>
-                    <td>${data[i].sentiment_analysis_score}</td>
-                    `;
-                // Insert a row at the end of table
-                var newRow = el.insertRow();
-
-                newRow.innerHTML = row;
-            };
-        };
-
         function update_metric_item(id, value) {
 
             // Update displayed value
@@ -159,88 +135,211 @@
             el.innerHTML = value;
         }
 
-        $( document ).ready(function() {
-            console.log( "ready!" );
+        function update_news_amount() {
+            var endpoint_url = "http://127.0.0.1:8000/news_amount"
 
+            $.get(endpoint_url, function(data, status){
+                // Update the dashboard
+                update_metric_item('amount-of-news-metric', data['count']);
+            })
+            .fail(function(data, status) {
+                var status_code = data["status"];
+                var error_message = JSON.parse(data["responseText"])["detail"];
+                alert(error_message + " (Status code: " + status_code + ").");
+            })
+        };
 
+        function update_source_amount() {
+            var endpoint_url = "http://127.0.0.1:8000/source_amount"
+
+            $.get(endpoint_url, function(data, status){
+                // Update the dashboard
+                update_metric_item('amount-of-news-sources', data['count']);
+            })
+            .fail(function(data, status) {
+                var status_code = data["status"];
+                var error_message = JSON.parse(data["responseText"])["detail"];
+                alert(error_message + " (Status code: " + status_code + ").");
+            })
+        };
+
+        function update_country_amount() {
+            var endpoint_url = "http://127.0.0.1:8000/country_amount"
+
+            $.get(endpoint_url, function(data, status){
+                // Update the dashboard
+                update_metric_item('amount-of-countries', data['count']);
+            })
+            .fail(function(data, status) {
+                var status_code = data["status"];
+                var error_message = JSON.parse(data["responseText"])["detail"];
+                alert(error_message + " (Status code: " + status_code + ").");
+            })
+        };
+
+        function update_recent_news_table() {
+
+            var endpoint_url = "http://127.0.0.1:8000/recent_news"
+
+            $.get(endpoint_url, function(data, status){
+
+                // Update the table
+                var el = document.getElementById('recent-news-table').getElementsByTagName('tbody')[0];
+
+                for (let i = 0; i < data.length; i++) {
+                    var row = `
+                        <td>${data[i].publish_date}</td>
+                        <td>
+                            <a href="">${data[i].title}</a>
+                        </td>
+                        <td>${data[i].sentiment_analysis_score}</td>
+                        `;
+                    // Insert a row at the end of table
+                    var newRow = el.insertRow();
+
+                    newRow.innerHTML = row;
+                };
+            })
+            .fail(function(data, status) {
+                var status_code = data["status"];
+                var error_message = JSON.parse(data["responseText"])["detail"];
+                alert(error_message + " (Status code: " + status_code + ").");
+            })
+
+        };
+
+        function update_graph_news_amount_over_time() {
+
+            var endpoint_url = "http://127.0.0.1:8000/news_amount_over_time"
+
+            $.get(endpoint_url, function(data, status){
+
+                // Update the table
+                // Get max amount
+                var max_count = 0;
+                for (let i = 0; i < data.length; i++) {
+                    if (data[i].count > max_count){
+                        max_count = data[i].count;
+                    };
+                };
+                max_count = Math.ceil(max_count/100)*100;
+
+                // set the dimensions and margins of the graph
+                var margin = {top: 30, right: 30, bottom: 70, left: 60},
+                    width = 460 - margin.left - margin.right,
+                    height = 400 - margin.top - margin.bottom;
+
+                // append the svg object to the body of the page
+                var svg = d3.select("#graph_news_amount_over_time")
+                .append("svg")
+                    .attr("width", width + margin.left + margin.right)
+                    .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                    .attr("transform",
+                        "translate(" + margin.left + "," + margin.top + ")");
+
+                // X axis
+                var x = d3.scaleBand()
+                .range([ 0, width ])
+                .domain(data.map(function(d) { return d.publish_date; }))
+                .padding(0.2);
+                svg.append("g")
+                .attr("transform", "translate(0," + height + ")")
+                .call(d3.axisBottom(x))
+                .selectAll("text")
+                    .attr("transform", "translate(-10,0)rotate(-45)")
+                    .style("text-anchor", "end");
+
+                // Add Y axis
+                var y = d3.scaleLinear()
+                .domain([0, max_count])
+                .range([ height, 0]);
+                svg.append("g")
+                .call(d3.axisLeft(y));
+
+                // Bars
+                svg.selectAll("mybar")
+                .data(data)
+                .enter()
+                .append("rect")
+                    .attr("x", function(d) { return x(d.publish_date); })
+                    .attr("y", function(d) { return y(d.count); })
+                    .attr("width", x.bandwidth())
+                    .attr("height", function(d) { return height - y(d.count); })
+                    .attr("fill", "#69b3a2");
+
+            })
+            .fail(function(data, status) {
+                var status_code = data["status"];
+                var error_message = JSON.parse(data["responseText"])["detail"];
+                alert(error_message + " (Status code: " + status_code + ").");
+            })
+
+            }
+
+        function update_graph_news_sentiment_per_country() {
+
+            var svg2 = d3.select("#graph_news_sentiment_per_country"),
+                width = +svg2.attr("width"),
+                height = +svg2.attr("height");
+
+            // Map and projection
+            var path = d3.geoPath();
+            var projection = d3.geoMercator()
+            .scale(70)
+            .center([0,20])
+            .translate([width / 2, height / 2]);
+
+            // Data and color scale
+            var data = d3.map();
+            var colorScale = d3.scaleThreshold()
+            .domain([100000, 1000000, 10000000, 30000000, 100000000, 500000000])
+            .range(d3.schemeBlues[7]);
+
+            function ready(error, topo) {
+                console.log(topo)
+
+                // Draw the map
+                svg2.append("g")
+                    .selectAll("path")
+                    .data(topo.features)
+                    .enter()
+                    .append("path")
+                    // draw each country
+                    .attr("d", d3.geoPath()
+                        .projection(projection)
+                    )
+                    // set the color of each country
+                    .attr("fill", function (d) {
+                        d.total = data.get(d.id) || 0;
+                        return colorScale(d.total);
+                });
+            }
+
+            // Load external data and boot
+            d3.queue()
+            .defer(d3.json, "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson")
+            .defer(d3.csv, "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world_population.csv", function(d) { data.set(d.code, +d.pop); })
+            .await(ready);
+
+        }
+
+        $(document).ready(function() {
+
+            // Update main metrics
+            update_news_amount();
+            update_source_amount();
+            update_country_amount();
+
+            // Update news
             update_recent_news_table();
 
-            update_metric_item('amount-of-news-metric', 145);
-            update_metric_item('amount-of-news-sources', 25);
-            update_metric_item('amount-of-countries', 58);
-
-
-            // Insert a cell at the end of the row
-            //var newCell = newRow.insertCell();
-
-            // Append a text node to the cell
-            //var newText = document.createTextNode('new row');
-            //newCell.appendChild(newText);
+            update_graph_news_amount_over_time();
+            //update_graph_news_sentiment_per_country();
 
         });
         
-        /*
-        // set the dimensions and margins of the graph
-        var margin = {top: 30, right: 30, bottom: 70, left: 60},
-            width = 460 - margin.left - margin.right,
-            height = 400 - margin.top - margin.bottom;
-        
-        // append the svg object to the body of the page
-        var svg = d3.select("#graph_news_amount_over_time")
-          .append("svg")
-            .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.top + margin.bottom)
-          .append("g")
-            .attr("transform",
-                  "translate(" + margin.left + "," + margin.top + ")");
-        
-        // Parse the Data
-        d3.csv("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/7_OneCatOneNum_header.csv", function(data) {
 
-            //data = [{"publish_date": '2021-01-01', "value": "1"}, {"publish_date": '2021-01-02', "value": "1"}]
-            data = [{"Country": '2021-01-01', "Value": "50"}, {"Country": '2021-01-02', "Value": "110"}]
-
-            // Get max amount
-            var max_value = 0;
-            for (let i = 0; i < data.length; i++) {
-                if (data[i].Value > max_value){
-                    max_value = data[i].Value;
-                };
-            };
-            max_value = Math.ceil(max_value/100)*100;
-
-            // X axis
-            var x = d3.scaleBand()
-            .range([ 0, width ])
-            .domain(data.map(function(d) { return d.Country; }))
-            .padding(0.2);
-            svg.append("g")
-            .attr("transform", "translate(0," + height + ")")
-            .call(d3.axisBottom(x))
-            .selectAll("text")
-                .attr("transform", "translate(-10,0)rotate(-45)")
-                .style("text-anchor", "end");
-            
-            // Add Y axis
-            var y = d3.scaleLinear()
-            .domain([0, 200])
-            .range([ height, 0]);
-            svg.append("g")
-            .call(d3.axisLeft(y));
-            
-            // Bars
-            svg.selectAll("mybar")
-            .data(data)
-            .enter()
-            .append("rect")
-                .attr("x", function(d) { return x(d.Country); })
-                .attr("y", function(d) { return y(d.Value); })
-                .attr("width", x.bandwidth())
-                .attr("height", function(d) { return height - y(d.Value); })
-                .attr("fill", "#69b3a2")
-        
-        })
-        */
         /*
         ///////////////
         // The svg
@@ -284,52 +383,9 @@
                 d.total = data.get(d.id) || 0;
                 return colorScale(d.total);
             });
-            }
-
-        ///////////////
-        // The svg
-        var svg2 = d3.select("#graph_news_sentiment_per_country"),
-            width = +svg2.attr("width"),
-            height = +svg2.attr("height");
-
-        // Map and projection
-        var path = d3.geoPath();
-        var projection = d3.geoMercator()
-        .scale(70)
-        .center([0,20])
-        .translate([width / 2, height / 2]);
-
-        // Data and color scale
-        var data = d3.map();
-        var colorScale = d3.scaleThreshold()
-        .domain([100000, 1000000, 10000000, 30000000, 100000000, 500000000])
-        .range(d3.schemeBlues[7]);
-
-        // Load external data and boot
-        d3.queue()
-        .defer(d3.json, "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson")
-        .defer(d3.csv, "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world_population.csv", function(d) { data.set(d.code, +d.pop); })
-        .await(ready);
-
-        function ready(error, topo) {
-
-        // Draw the map
-        svg2.append("g")
-            .selectAll("path")
-            .data(topo.features)
-            .enter()
-            .append("path")
-            // draw each country
-            .attr("d", d3.geoPath()
-                .projection(projection)
-            )
-            // set the color of each country
-            .attr("fill", function (d) {
-                d.total = data.get(d.id) || 0;
-                return colorScale(d.total);
-            });
-            }
+        }
         */
+        
     </script>
 
 </body>
