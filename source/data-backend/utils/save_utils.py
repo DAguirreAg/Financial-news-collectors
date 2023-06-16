@@ -31,10 +31,6 @@ def save_webpage_local_storage(config, download_path, webpage):
     with open(filename, "w") as text_file:
         text_file.write(webpage_json)
 
-def save_webpage_googleDrive(webpage):
-    # TO DO
-    pass
-
 def save_webpage(config: Config, url: str, domain: str, html: str, save_to: str, download_path: str = None):
         
     # Create the webpage dict
@@ -50,9 +46,6 @@ def save_webpage(config: Config, url: str, domain: str, html: str, save_to: str,
                 
     elif save_to == 'mongoDB':
         save_webpage_mongoDB(webpage)
-
-    elif save_to == 'googleDrive':
-        save_webpage_googleDrive(webpage)
 
     else:
         raise Exception(f'"save_to" parameter received unexpected value: {save_to}. Please revise.')

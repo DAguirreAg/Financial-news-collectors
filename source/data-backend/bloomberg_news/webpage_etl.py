@@ -205,10 +205,6 @@ def main(config, etl_consumption_path):
 
             # Insert news
             sql_utils.insert_data_into_db_news_table(news)
-    
-    elif load_from == 'googleDrive':
-        # TO DO
-        pass
 
     else:
         raise Exception(f'"load_from" parameter received unexpected value. Please revise.')

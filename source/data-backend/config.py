@@ -16,7 +16,7 @@ class Config:
     HEADLESS = False
     WAIT_PAUSE_TIME = 3 #seconds
     SCROLL_PAUSE_TIME = 2 #seconds
-    RAW_FORMAT = 'mongoDB' # How the collected files will be saved/loaded: Folder/File or MongoDB or GoogleDrive
+    RAW_FORMAT = 'mongoDB' # How the collected files will be saved/loaded: Folder/File or MongoDB
 
     # Bloomberg news settings
     NEWS_SETTINGS = {
