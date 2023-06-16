@@ -9,6 +9,11 @@ import glob
 import utils.sql_utils as sql_utils
 import utils.sentiment_analysis_scorer as sentiment_analysis_scorer
 import utils.country_detector as country_detector
+import pymongo
+
+mongodb_client = pymongo.MongoClient(Config.MONGODB_DATABASE_URL)
+mongodb = mongodb_client["financial_news"]
+webpage_collection = mongodb["webpages"] # Create the collections
 
 # Helper functions
 def get_title(headline):
@@ -122,14 +127,14 @@ def main(config, etl_consumption_path):
         filename_paths = glob.glob(etl_consumption_path + "*.json")
 
         # Get already ETL'ed files
-        distinct_urls = sql_utils.get_distinct_ref_filenames()
+        distinct_ref_filenames = sql_utils.get_distinct_ref_filenames()
 
         # Get list of files to ETL
         filename_paths_to_upload = []
         for filename_path in filename_paths:
             ref_filename = filename_path.split('/')[-1]
 
-            if ref_filename not in distinct_urls:
+            if ref_filename not in distinct_ref_filenames:
                 filename_paths_to_upload.append(filename_path)
 
         # Reupload the missing files
@@ -158,8 +163,48 @@ def main(config, etl_consumption_path):
             sql_utils.insert_data_into_db_news_table(news)
         
     elif load_from == 'mongoDB':
-        # TO DO
-        pass
+
+        # Get available files
+        webpages = webpage_collection.find()
+
+        file_ids = []
+        for webpage in webpages:
+            file_ids.append(str(webpage['_id']))
+
+        # Get already ETL'ed files
+        distinct_ref_filenames = sql_utils.get_distinct_ref_filenames()
+
+        # Get list of files to ETL
+        file_ids_to_upload = []
+        for file_id in file_ids:
+
+            if file_id not in distinct_ref_filenames:
+                file_ids_to_upload.append(file_id)
+
+        from bson.objectid import ObjectId
+        for file_id in file_ids:
+            print(f'ETL: {file_id}')
+
+            # Load file
+            myquery = {"_id": ObjectId(file_id)}
+            webpage = webpage_collection.find_one(myquery)
+
+            # Extract
+            html = webpage['html']
+            soup = BeautifulSoup(html, 'html.parser')
+
+            # Get headlines
+            news = get_headlines(soup)
+
+            # Add domain and ref_filename info
+            domain = webpage['domain']
+            ref_filename = file_id
+            for news_item in news:
+                news_item['domain'] = domain
+                news_item['ref_filename'] = ref_filename
+
+            # Insert news
+            sql_utils.insert_data_into_db_news_table(news)
     
     elif load_from == 'googleDrive':
         # TO DO
