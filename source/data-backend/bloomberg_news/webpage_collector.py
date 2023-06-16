@@ -3,7 +3,7 @@ sys.path.append("..")
 
 import time
 from config import Config
-import utils.mongodb_utils as mongodb_utils
+import utils.save_utils as save_utils
 
 from selenium import webdriver
 from selenium.common.exceptions import WebDriverException
@@ -42,7 +42,7 @@ def main(config, urls, domain, download_path):
 
             # Save HTML
             html_doc = driver.page_source
-            mongodb_utils.add_webpage(config, url, domain, html_doc, config.RAW_FORMAT, download_path)
+            save_utils.save_webpage(config, url, domain, html_doc, config.RAW_FORMAT, download_path)
         
         except Exception as e:
             # To DO: Add logging of errors

@@ -137,7 +137,18 @@ def main(config, etl_consumption_path):
         # Get available files
         filename_paths = glob.glob(etl_consumption_path + "*.json")
 
+        # Get already ETL'ed files
+        distinct_urls = sql_utils.get_distinct_ref_filenames()
+
+        # Get list of files to ETL
+        filename_paths_to_upload = []
         for filename_path in filename_paths:
+            ref_filename = filename_path.split('/')[-1]
+
+            if ref_filename not in distinct_urls:
+                filename_paths_to_upload.append(filename_path)
+
+        for filename_path in filename_paths_to_upload:
             print(f'ETL: {filename_path}')
 
             # Load file
@@ -165,6 +176,10 @@ def main(config, etl_consumption_path):
         # TO DO
         pass
     
+    elif load_from == 'googleDrive':
+        # TO DO
+        pass
+
     else:
         raise Exception(f'"load_from" parameter received unexpected value. Please revise.')
 
