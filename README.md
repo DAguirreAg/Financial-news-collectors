@@ -28,8 +28,8 @@ Even most financial news outlets provide API services for data consumption, most
 Follow the next steps:
 
 * Prepare the database:
-	  * Open your favourite SQL database and create the database and the table using `setup.sql` helper script.
-	  * Open the `config.py` file and modify the `SQLALCHEMY_DATABASE_URL` to use the database you just created.
+	* Open your favourite SQL database and create the database and the table using `setup.sql` helper script.
+	* Open the `config.py` file and modify the `SQLALCHEMY_DATABASE_URL` to use the database you just created.
 
 * Prepare the data-backend service:
 	* Install the required python packages via `pip install -r requirements.txt`. (It is recommended to use virtual environments when installing them to avoid conflicting version issues).
@@ -95,7 +95,7 @@ Database size:
 ## How it works
 The repository is divided into three parts: 
 
-* Data-backend: Contains the code to collect news webpages and extract and enrich headline related data and place it into a database. It can store the downloaded webpages in three ways: Local storage, Google drive and mongoDB. The reason for having multiple options of storage is to facilitate the deployment of this code in simple machines, as well utilize more advance (and costly options).
+* Data-backend: Contains the code to collect news webpages and extract and enrich headline related data and place it into a database. It can store the downloaded webpages in two ways: Local storage and mongoDB. The reason for having multiple options of storage is to facilitate the deployment of this code in simple machines, as well utilize more advance (and costly options).
 * Frontend: Contains the code for the UI to facilitate the basic analytics functionality.
 * Backend: Contains the code for the frontend to consume the data. It is an intermediary API service to facilitate data fetching.
 
@@ -109,19 +109,10 @@ Note that each service should be ran in their own environment, as they work inde
 	</div>
 </div>
 
-# Future functionalities
+# Future functionalities/Considerations
 
-* When using the folder/Google drive storage mode, the ETL will load and analyze all the files, **even the ones already analyzed**. This is can easily be avoid by fetching the latest file's date, and avoiding loading it. Another solution may include moving those already processed files to another location. 
+* Every time the script runs, all the files are reloaded in search of headlines, **even the ones already analyzed**.. This is quite a waste of resources as unless the ETL process changes, no new data will be extracted. To avoid this behaviour, two solutions can be implemented:
+  * Move the already analyzed files to another location (or flag them as analyzed if using MongoDB).
+  * Creating a table to store the files already analyzed and only analyze the files that are not in that list.
 
-* Due to the simplicity of the program, the files will be keep being reanalyzed to be uploaded, even when the files where already analyzed!
-
-* Due to Bloomberg's anti bot features (which blocks any get request to urls), it was decided to open/close a browser everytime a url is visted. This, even if a bit unperformant, circumbents this issue and allows for retrieval of the pages.
-
-## To DO
-
-* Add logging functionality
-* Add unit testing to at least the basic extraction functions
-* Improve documentation
-* Add frontend to do some basic analytics
-* Replace SQL insert functionality to do it more efficiently (currently it is being done via pandas)
-* Add type hinting to all functions
+* Due to Bloomberg's anti bot features (which blocks any get request to urls), it was decided to open/close a browser every time a url is visited. This, even if not very performant, circumvents this issue and allows for retrieval of the pages.
