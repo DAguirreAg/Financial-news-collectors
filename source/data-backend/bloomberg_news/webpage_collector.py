@@ -13,7 +13,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 import random
 
-def main(config, urls, domain, download_path):
+def main(config: Config, urls: str, domain: str, download_path: str):
 
     # Driver settings
     chrome_options = Options()

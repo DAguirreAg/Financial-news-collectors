@@ -9,11 +9,11 @@ mongodb_client = pymongo.MongoClient(Config.MONGODB_DATABASE_URL)
 mongodb = mongodb_client["financial_news"]
 webpage_collection = mongodb["webpages"] # Create the collections
 
-def save_webpage_mongoDB(webpage):
+def save_webpage_mongoDB(webpage: dict):
     # Insert webpage
     webpage_collection.insert_one(webpage)
 
-def save_webpage_local_storage(config, download_path, webpage):
+def save_webpage_local_storage(config: Config, download_path: str, webpage: dict):
     # Convert into JSON:
     webpage_json = json.dumps(webpage)
         

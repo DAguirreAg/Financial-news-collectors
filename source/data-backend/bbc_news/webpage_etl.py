@@ -1,7 +1,7 @@
 import sys
 sys.path.append("..")
 
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, element
 import datetime
 import json
 from config import Config
@@ -16,7 +16,7 @@ mongodb = mongodb_client["financial_news"]
 webpage_collection = mongodb["webpages"] # Create the collections
 
 # Helper functions
-def get_title(headline):
+def get_title(headline: element.Tag):
         
     # Title
     try:
@@ -31,7 +31,7 @@ def get_title(headline):
     
     return title
 
-def get_url(headline):
+def get_url(headline: element.Tag):
     
     # Url
     try:        
@@ -48,7 +48,7 @@ def get_url(headline):
     
     return url
 
-def get_publish_date(headline):
+def get_publish_date(headline: element.Tag):
     
     # Publish date
     publish_date = None
@@ -78,14 +78,14 @@ def get_publish_date(headline):
 
     return publish_date
 
-def get_tickers(headline):
+def get_tickers(headline: element.Tag):
     
     # Tickers
     tickers = []
 
     return tickers
 
-def extract_headline_data(headline):
+def extract_headline_data(headline: element.Tag):
     
     # Extract data
     extract = {    
@@ -99,7 +99,7 @@ def extract_headline_data(headline):
     
     return extract
 
-def get_headlines(soup):
+def get_headlines(soup: BeautifulSoup):
     # Get headlines
     headlines = soup.find_all('div', {'class': 'gel-layout__item'})
 
@@ -116,7 +116,7 @@ def get_headlines(soup):
 
     return news
 
-def validate_extract(extract):
+def validate_extract(extract: dict):
     
     title = extract['title']
     url = extract['url']
@@ -133,7 +133,7 @@ def validate_extract(extract):
 
     return True
 
-def main(config, etl_consumption_path):
+def main(config: Config, etl_consumption_path: str):
 
     load_from = config.RAW_FORMAT
     
