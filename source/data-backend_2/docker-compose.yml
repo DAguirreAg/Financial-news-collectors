@@ -1,0 +1,25 @@
+services:
+  app:
+    build: .
+    image: test
+    container_name: financial_news_collectors
+    volumes:
+      - /home/daniel/Desktop/test:/usr/src/app/Datalake
+    ports:
+      - "8101:80"
+    expose:
+      - "8101"
+
+  selenium_standalone_chrome:
+    image: selenium/standalone-chrome # For running on non-Raspberry systems (non-ARM)
+    #image: seleniarm/standalone-chromium:latest # For running on Raspberry systems (ARM)
+    
+    container_name: selenium_standalone_chrome_financial_news_collectors
+    privileged: true
+    shm_size: 2g
+
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: example
