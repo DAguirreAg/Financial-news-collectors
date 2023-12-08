@@ -3,7 +3,7 @@ import datetime
 class Config:
     
     # Selenium settings
-    WEBDRIVER_BROWSER = 'chrome'#'selenium-api'
+    WEBDRIVER_BROWSER = 'selenium-api'# Options: 'chrome' OR 'selenium-api'
     WAIT_PAUSE_TIME = 5 #seconds
     IMPLICIT_WAIT_TIME = 10 #seconds
     
@@ -55,5 +55,8 @@ class Config:
     }
     
     # DATABASE
-    SQLALCHEMY_DATABASE_URL = 'postgresql+psycopg2://airflow:airflow@localhost:5432/db_finance_universe'
+    SQLALCHEMY_DATABASE_URL = 'postgresql+psycopg2://postgres:mysecretpassword@some-postgres:5432/postgres'
+    #SQLALCHEMY_DATABASE_URL = 'postgresql+psycopg2://postgres:mysecretpassword@127.0.0.1:5432/db_finance_universe'
+
+    
     
